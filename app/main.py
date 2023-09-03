@@ -1,6 +1,6 @@
 import os
 
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -53,3 +53,16 @@ def create_user(name: str = Form(...), age: int = Form(...)):
 
     # POSTからGETにリダイレクトするにはステータスコードを設定
     return RedirectResponse('/', status_code=302)
+
+
+@app.post("/users/delete/{id}")
+def delete_user(id: int):
+    db = SessionLocal()
+    user = db.query(User).filter(User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    db.delete(user)
+    db.commit()
+
+    return RedirectResponse("/", status_code=303)
