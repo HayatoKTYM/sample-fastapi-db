@@ -1,0 +1,30 @@
+version: '3'
+services:
+  fastapi-app:
+    # image: tiangolo/uvicorn-gunicorn-fastapi:python3.9
+    # entrypoint: /app/entrypoint.sh
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8111"]
+    ports:
+      - "8111:8111"
+    volumes:
+      - ./app:/app
+    environment:
+      - DB_USER=user00
+      - DB_PWD=password1234
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: fastapidb
+      POSTGRES_USER: user00
+      POSTGRES_PASSWORD: password1234
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
