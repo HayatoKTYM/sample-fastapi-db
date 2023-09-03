@@ -15,3 +15,5 @@ docker-compose up
 ```sh
 docker-compose exec [サービス名] psql -U [ユーザー名] -d [データベース名]
 ```
+
+名称は`docker-compose.yml`を参照してください．
